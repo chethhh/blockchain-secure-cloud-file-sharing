@@ -1,0 +1,24 @@
+{
+  "name": "blockchain-secure-cloud-file-sharing-root",
+  "version": "1.0.0",
+  "description": "Decentralized Secure Cloud File Sharing System using React, Node.js, IPFS, Solidity & Ethereum",
+  "scripts": {
+    "install:all": "npm install && cd blockchain && npm install && cd ../backend && npm install && cd ../frontend && npm install",
+    "chain": "cd blockchain && npm run node",
+    "deploy": "cd blockchain && npm run deploy",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev"
+  },
+  "keywords": [
+    "blockchain",
+    "ipfs",
+    "solidity",
+    "ethereum",
+    "react",
+    "express",
+    "aes-256-gcm",
+    "pinata"
+  ],
+  "author": "Engineering Major Project",
+  "license": "MIT"
+}

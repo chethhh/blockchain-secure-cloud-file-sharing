@@ -1,0 +1,26 @@
+{
+  "name": "blockchain-file-sharing",
+  "version": "1.0.0",
+  "description": "Smart contracts for Decentralized Secure Cloud File Sharing System",
+  "main": "hardhat.config.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "node": "hardhat node",
+    "deploy": "hardhat run scripts/deploy.js --network localhost"
+  },
+  "keywords": [
+    "solidity",
+    "hardhat",
+    "ethereum",
+    "ipfs",
+    "file-sharing"
+  ],
+  "author": "Engineering Major Project",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "dotenv": "^16.3.1",
+    "hardhat": "^2.19.0"
+  }
+}
