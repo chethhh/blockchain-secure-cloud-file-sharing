@@ -89,7 +89,11 @@ const register = async (req, res, next) => {
       message: 'Registration successful! Please log in to complete OTP verification.'
     });
   } catch (error) {
-    next(error);
+    console.error(`[Register Error]`, error);
+    res.status(400).json({
+      success: false,
+      message: error.message || 'Registration failed'
+    });
   }
 };
 
@@ -156,7 +160,11 @@ const login = async (req, res, next) => {
       otp: process.env.DEV_LOG_OTP === 'true' ? otp : undefined
     });
   } catch (error) {
-    next(error);
+    console.error(`[Login Error]`, error);
+    res.status(400).json({
+      success: false,
+      message: error.message || 'Login failed'
+    });
   }
 };
 
@@ -236,7 +244,11 @@ const verifyOtp = async (req, res, next) => {
       }
     });
   } catch (error) {
-    next(error);
+    console.error(`[Verify OTP Error]`, error);
+    res.status(400).json({
+      success: false,
+      message: error.message || 'OTP verification failed'
+    });
   }
 };
 
