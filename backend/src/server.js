@@ -18,7 +18,11 @@ const server = app.listen(PORT, () => {
   `);
 });
 
-// Handle unhandled promise rejections
+// Handle unhandled promise rejections & uncaught exceptions to keep server online
 process.on('unhandledRejection', (err) => {
   console.error(`[Unhandled Rejection] Error: ${err.message}`);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error(`[Uncaught Exception] Error: ${err.message}`);
 });
