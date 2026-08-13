@@ -152,7 +152,8 @@ const login = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: `OTP sent to your email. Expire in ${expiresMinutes} minutes.`,
-      email: user.email
+      email: user.email,
+      otp: process.env.DEV_LOG_OTP === 'true' ? otp : undefined
     });
   } catch (error) {
     next(error);
