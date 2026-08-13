@@ -12,8 +12,16 @@ const activityRoutes = require('./routes/activityRoutes');
 
 const app = express();
 
-// Enable universal CORS on all routes and preflights
-app.use(cors());
+// Enable proxy trust for Render / Vercel reverse proxies
+app.set('trust proxy', 1);
+
+// Enable universal CORS for all origins
+app.use(cors({
+  origin: '*',
+  credentials: false,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+}));
 app.options('*', cors());
 
 // Security Headers
