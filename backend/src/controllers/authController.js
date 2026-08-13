@@ -35,28 +35,38 @@ const register = async (req, res, next) => {
     }
 
     const lowerEmail = email.toLowerCase().trim();
-    const isDbConnected = mongoose.connection.readyState === 1;
+    let isDbConnected = false;
 
-    if (isDbConnected) {
-      const existingUser = await User.findOne({ email: lowerEmail });
-      if (existingUser) {
-        return res.status(400).json({ success: false, message: 'An account with this email already exists' });
+    try {
+      if (mongoose.connection.readyState === 1) {
+        const existingUser = await User.findOne({ email: lowerEmail });
+        if (existingUser) {
+          return res.status(400).json({ success: false, message: 'An account with this email already exists' });
+        }
+
+        const user = new User({
+          name,
+          email: lowerEmail,
+          password,
+          role: 'Viewer'
+        });
+        await user.save();
+        isDbConnected = true;
+
+        try {
+          await logActivity({
+            user: user._id,
+            action: 'REGISTER',
+            metadata: { role: 'Viewer' }
+          });
+        } catch (logErr) {}
       }
+    } catch (dbErr) {
+      console.warn(`[MongoDB Notice] Database operation failed, falling back to memory store: ${dbErr.message}`);
+      isDbConnected = false;
+    }
 
-      const user = new User({
-        name,
-        email: lowerEmail,
-        password,
-        role: 'Viewer'
-      });
-      await user.save();
-
-      await logActivity({
-        user: user._id,
-        action: 'REGISTER',
-        metadata: { role: 'Viewer' }
-      });
-    } else {
+    if (!isDbConnected) {
       // In-Memory Database Fallback Mode
       if (inMemoryUsers.has(lowerEmail)) {
         return res.status(400).json({ success: false, message: 'An account with this email already exists' });
@@ -111,18 +121,24 @@ const login = async (req, res, next) => {
     }
 
     const lowerEmail = email.toLowerCase().trim();
-    const isDbConnected = mongoose.connection.readyState === 1;
-
+    let isDbConnected = false;
     let user = null;
     let isMatch = false;
 
-    if (isDbConnected) {
-      user = await User.findOne({ email: lowerEmail }).select('+password');
-      if (!user) {
-        return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    try {
+      if (mongoose.connection.readyState === 1) {
+        user = await User.findOne({ email: lowerEmail }).select('+password');
+        if (user) {
+          isMatch = await user.matchPassword(password);
+          isDbConnected = true;
+        }
       }
-      isMatch = await user.matchPassword(password);
-    } else {
+    } catch (dbErr) {
+      console.warn(`[MongoDB Notice] Login DB query error, using memory store: ${dbErr.message}`);
+      isDbConnected = false;
+    }
+
+    if (!isDbConnected) {
       user = inMemoryUsers.get(lowerEmail);
       if (!user) {
         return res.status(401).json({ success: false, message: 'Invalid credentials' });
@@ -130,7 +146,7 @@ const login = async (req, res, next) => {
       isMatch = await bcrypt.compare(password, user.password);
     }
 
-    if (!isMatch) {
+    if (!isMatch || !user) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 
@@ -182,12 +198,19 @@ const verifyOtp = async (req, res, next) => {
     }
 
     const lowerEmail = email.toLowerCase().trim();
-    const isDbConnected = mongoose.connection.readyState === 1;
-
+    let isDbConnected = false;
     let user = null;
-    if (isDbConnected) {
-      user = await User.findOne({ email: lowerEmail });
-    } else {
+
+    try {
+      if (mongoose.connection.readyState === 1) {
+        user = await User.findOne({ email: lowerEmail });
+        if (user) isDbConnected = true;
+      }
+    } catch (dbErr) {
+      isDbConnected = false;
+    }
+
+    if (!isDbConnected) {
       user = inMemoryUsers.get(lowerEmail);
     }
 
