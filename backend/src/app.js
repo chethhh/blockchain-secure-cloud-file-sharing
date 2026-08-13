@@ -12,18 +12,14 @@ const activityRoutes = require('./routes/activityRoutes');
 
 const app = express();
 
-// Cross-Origin Resource Sharing (Enable CORS & OPTIONS preflight for all origins)
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  credentials: false
-}));
+// Enable universal CORS on all routes and preflights
+app.use(cors());
 app.options('*', cors());
 
 // Security Headers
 app.use(helmet({
-  crossOriginResourcePolicy: false
+  crossOriginResourcePolicy: false,
+  crossOriginOpenerPolicy: false
 }));
 
 // Rate Limiting
