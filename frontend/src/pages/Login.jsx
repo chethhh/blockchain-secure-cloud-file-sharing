@@ -32,40 +32,38 @@ const Login = () => {
       <div style={{
         width: '100%',
         maxWidth: '440px',
-        backgroundColor: 'rgba(15, 18, 34, 0.85)',
-        backdropFilter: 'blur(20px)',
-        borderRadius: '1.25rem',
-        border: '1px solid rgba(255, 42, 133, 0.3)',
-        boxShadow: '0 0 40px rgba(255, 42, 133, 0.25)',
+        backgroundColor: '#ffffff',
+        borderRadius: '2rem',
+        border: '3px solid #ffccd5',
+        boxShadow: '0 20px 50px rgba(255, 117, 151, 0.25)',
         padding: '2.5rem'
       }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{
-            width: '56px',
-            height: '56px',
-            borderRadius: '16px',
-            background: 'linear-gradient(135deg, #ff2a85, #00f0ff)',
+            width: '64px',
+            height: '64px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #ff7597, #ff4d6d)',
             color: '#ffffff',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: '1rem',
-            boxShadow: '0 0 20px rgba(0, 240, 255, 0.4)'
+            boxShadow: '0 6px 20px rgba(255, 77, 109, 0.35)',
+            fontSize: '2rem'
           }}>
-            <Shield size={32} />
+            🐱
           </div>
           <h2 style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: '1.75rem',
-            fontWeight: 800,
-            background: 'linear-gradient(135deg, #ffffff 0%, #00f0ff 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
+            fontFamily: "'Fredoka', sans-serif",
+            fontSize: '1.875rem',
+            fontWeight: 700,
+            color: '#22223b'
           }}>
-            SYSTEM ACCESS
+            MEOW LOGIN 🐾
           </h2>
-          <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginTop: '0.375rem' }}>
-            Aura Protocol • IPFS & Ethereum Security
+          <p style={{ fontSize: '0.9375rem', color: '#ff4d6d', fontWeight: 700, marginTop: '0.375rem' }}>
+            Cute & Secure Blockchain Cloud File Sharing
           </p>
         </div>
 

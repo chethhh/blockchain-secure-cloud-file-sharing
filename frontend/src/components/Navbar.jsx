@@ -14,11 +14,11 @@ const Navbar = () => {
 
   return (
     <header style={{
-      height: '70px',
-      backgroundColor: 'rgba(12, 14, 28, 0.9)',
+      height: '74px',
+      backgroundColor: 'rgba(255, 255, 255, 0.95)',
       backdropFilter: 'blur(16px)',
-      borderBottom: '1px solid rgba(255, 42, 133, 0.25)',
-      boxShadow: '0 4px 25px rgba(0, 0, 0, 0.5)',
+      borderBottom: '2px solid #ffe5ec',
+      boxShadow: '0 4px 20px rgba(255, 117, 151, 0.1)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -29,27 +29,25 @@ const Navbar = () => {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
         <div style={{
-          width: '40px',
-          height: '40px',
-          borderRadius: '10px',
-          background: 'linear-gradient(135deg, #ff2a85, #00f0ff)',
+          width: '44px',
+          height: '44px',
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, #ff7597, #ff4d6d)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 0 15px rgba(255, 42, 133, 0.5)'
+          boxShadow: '0 4px 15px rgba(255, 117, 151, 0.3)',
+          fontSize: '1.5rem'
         }}>
-          <Shield size={24} color="#ffffff" />
+          🐱
         </div>
         <span style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          fontWeight: 800,
-          fontSize: '1.25rem',
-          letterSpacing: '-0.02em',
-          background: 'linear-gradient(135deg, #ffffff 0%, #00f0ff 50%, #ff2a85 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
+          fontFamily: "'Fredoka', sans-serif",
+          fontWeight: 700,
+          fontSize: '1.35rem',
+          color: '#22223b'
         }}>
-          AURA<span style={{ color: '#00f0ff', WebkitTextFillColor: '#00f0ff' }}>·IPFS</span>
+          MEOW<span style={{ color: '#ff4d6d' }}>·IPFS 🐾</span>
         </span>
       </div>
 
@@ -60,17 +58,17 @@ const Navbar = () => {
             display: 'flex',
             alignItems: 'center',
             gap: '0.625rem',
-            padding: '0.5rem 1rem',
-            backgroundColor: 'rgba(0, 255, 170, 0.1)',
-            border: '1px solid rgba(0, 255, 170, 0.4)',
+            padding: '0.5rem 1.125rem',
+            backgroundColor: '#e8fccf',
+            border: '2px solid #b7efc5',
             borderRadius: '9999px',
-            fontSize: '0.8125rem',
-            color: '#00ffaa',
+            fontSize: '0.875rem',
+            color: '#2b9348',
             fontWeight: 700,
-            boxShadow: '0 0 12px rgba(0, 255, 170, 0.2)'
+            boxShadow: '0 4px 12px rgba(43, 147, 72, 0.15)'
           }}>
             <Wallet size={16} />
-            <span>{formatWallet(account)}</span>
+            <span>🐾 {formatWallet(account)}</span>
           </div>
         ) : (
           <button
@@ -79,15 +77,15 @@ const Navbar = () => {
             className="btn btn-secondary btn-sm"
           >
             <Wallet size={16} />
-            <span>{isConnecting ? 'Connecting...' : 'Connect Wallet'}</span>
+            <span>{isConnecting ? 'Connecting...' : 'Connect Wallet 🐾'}</span>
           </button>
         )}
 
         {/* User Info Badge */}
         {user && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', borderLeft: '1px solid rgba(255, 255, 255, 0.1)', paddingLeft: '1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', borderLeft: '2px solid #ffe5ec', paddingLeft: '1.25rem' }}>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#ffffff' }}>{user.name}</div>
+              <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: '#22223b' }}>😸 {user.name}</div>
               <span className={`badge ${user.role === 'Admin' ? 'badge-danger' : user.role === 'Editor' ? 'badge-primary' : 'badge-warning'}`}>
                 {user.role}
               </span>

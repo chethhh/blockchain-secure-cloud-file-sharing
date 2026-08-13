@@ -1,23 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Fredoka:wght@500;600;700&display=swap');
 
 :root {
-  --anime-bg: #090a12;
-  --anime-card-bg: rgba(18, 20, 38, 0.8);
-  --anime-card-hover: rgba(26, 29, 54, 0.9);
-  --anime-pink: #ff2a85;
-  --anime-pink-glow: rgba(255, 42, 133, 0.35);
-  --anime-cyan: #00f0ff;
-  --anime-cyan-glow: rgba(0, 240, 255, 0.35);
-  --anime-purple: #9d4edd;
-  --anime-purple-glow: rgba(157, 78, 221, 0.35);
-  --anime-success: #00ffaa;
-  --anime-border: rgba(255, 255, 255, 0.1);
-  --anime-border-glow: rgba(255, 42, 133, 0.3);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --radius-lg: 1rem;
-  --radius-md: 0.75rem;
-  --shadow-anime: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  --cat-bg: #fff6f0;
+  --cat-card-bg: #ffffff;
+  --cat-pink: #ff7597;
+  --cat-pink-light: #fff0f5;
+  --cat-peach: #ffb3c1;
+  --cat-purple: #b5e2fa;
+  --cat-yellow: #ffe5ec;
+  --cat-mint: #e8fccf;
+  --cat-text: #4a4e69;
+  --cat-text-dark: #22223b;
+  --cat-border: #ffe5ec;
+  --radius-cat: 1.5rem;
+  --shadow-cat: 0 10px 30px -5px rgba(255, 117, 151, 0.15);
 }
 
 * {
@@ -27,31 +23,31 @@
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: var(--anime-bg);
+  font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--cat-bg);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(157, 78, 221, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(0, 240, 255, 0.12) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(255, 42, 133, 0.12) 0px, transparent 50%);
-  background-attachment: fixed;
-  color: var(--text-main);
+    radial-gradient(#ffccd5 1.5px, transparent 1.5px),
+    radial-gradient(#ffccd5 1.5px, #fff6f0 1.5px);
+  background-size: 60px 60px;
+  background-position: 0 0, 30px 30px;
+  color: var(--cat-text);
   line-height: 1.6;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
 a {
-  color: var(--anime-cyan);
+  color: var(--cat-pink);
   text-decoration: none;
+  font-weight: 700;
   transition: all 0.2s ease;
 }
 
 a:hover {
-  color: var(--anime-pink);
-  text-shadow: 0 0 8px var(--anime-pink-glow);
+  color: #ff4d6d;
 }
 
-/* Anime Layout Containers */
+/* Layout Utilities */
 .app-container {
   display: flex;
   min-height: 100vh;
@@ -65,36 +61,36 @@ a:hover {
 }
 
 .content-area {
-  padding: 2rem;
+  padding: 2.25rem;
   flex: 1;
 }
 
-/* Anime Cards & Glassmorphic Containers */
+/* Cat Soft Cards */
 .card {
-  background: var(--anime-card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--anime-border);
-  box-shadow: var(--shadow-anime);
-  padding: 1.75rem;
-  margin-bottom: 1.75rem;
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  background: var(--cat-card-bg);
+  border-radius: var(--radius-cat);
+  border: 2px solid #ffe5ec;
+  box-shadow: var(--shadow-cat);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  position: relative;
 }
 
 .card:hover {
-  border-color: rgba(0, 240, 255, 0.4);
-  box-shadow: 0 10px 40px 0 rgba(0, 240, 255, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px -5px rgba(255, 117, 151, 0.25);
+  border-color: var(--cat-pink);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
-/* Anime Stat Grid */
+/* Cute Stat Grid */
 .grid-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -103,125 +99,111 @@ a:hover {
 }
 
 .stat-card {
-  background: rgba(22, 25, 48, 0.7);
-  backdrop-filter: blur(12px);
+  background: #ffffff;
   padding: 1.5rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-cat);
+  border: 2px solid #ffe5ec;
   display: flex;
   align-items: center;
   gap: 1.25rem;
+  box-shadow: var(--shadow-cat);
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; width: 4px; height: 100%;
-  background: linear-gradient(180deg, var(--anime-pink), var(--anime-cyan));
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--anime-pink);
-  box-shadow: 0 8px 25px var(--anime-pink-glow);
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--cat-pink);
 }
 
 .stat-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 42, 133, 0.15);
-  color: var(--anime-pink);
-  border: 1px solid rgba(255, 42, 133, 0.3);
-  box-shadow: 0 0 15px var(--anime-pink-glow);
+  background: #fff0f5;
+  color: var(--cat-pink);
+  border: 2px solid #ffccd5;
+  font-size: 1.5rem;
 }
 
-/* Anime Gradient Titles */
+/* Cute Typography */
 h1, h2, h3, h4 {
-  font-family: 'Space Grotesk', sans-serif;
-  letter-spacing: -0.02em;
+  font-family: 'Fredoka', sans-serif;
+  color: var(--cat-text-dark);
+  letter-spacing: 0.02em;
 }
 
 .gradient-title {
-  background: linear-gradient(135deg, #ffffff 0%, var(--anime-cyan) 50%, var(--anime-pink) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ff4d6d;
 }
 
 /* Tables */
 .table-container {
   width: 100%;
   overflow-x: auto;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--anime-border);
+  border-radius: 1rem;
+  border: 2px solid #ffe5ec;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
 }
 
 th {
-  background-color: rgba(14, 16, 30, 0.9);
+  background-color: #fff0f5;
   padding: 1rem 1.25rem;
   font-weight: 700;
-  font-family: 'Space Grotesk', sans-serif;
-  color: var(--anime-cyan);
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid var(--anime-border);
+  font-family: 'Fredoka', sans-serif;
+  color: #ff4d6d;
+  font-size: 0.875rem;
+  border-bottom: 2px solid #ffe5ec;
 }
 
 td {
   padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid #ffe5ec;
   vertical-align: middle;
 }
 
 tr:hover {
-  background-color: rgba(0, 240, 255, 0.04);
+  background-color: #fff9fb;
 }
 
-/* Form Inputs & Anime Cyber Buttons */
+/* Cute Buttons & Form Controls */
 .form-group {
   margin-bottom: 1.25rem;
 }
 
 .form-group label {
   display: block;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 700;
   margin-bottom: 0.5rem;
-  color: #cbd5e1;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: var(--cat-text-dark);
 }
 
 .form-control {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-md);
-  background: rgba(12, 14, 26, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  padding: 0.875rem 1.25rem;
+  border-radius: 1rem;
+  background: #ffffff;
+  border: 2px solid #ffccd5;
+  color: var(--cat-text-dark);
   font-size: 0.9375rem;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
   outline: none;
   transition: all 0.25s ease;
 }
 
 .form-control:focus {
-  border-color: var(--anime-cyan);
-  box-shadow: 0 0 15px var(--anime-cyan-glow);
-  background: rgba(16, 19, 36, 0.95);
+  border-color: var(--cat-pink);
+  box-shadow: 0 0 0 4px rgba(255, 117, 151, 0.2);
 }
 
 .btn {
@@ -229,60 +211,52 @@ tr:hover {
   align-items: center;
   justify-content: center;
   gap: 0.625rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.875rem;
+  padding: 0.875rem 1.75rem;
+  font-size: 0.9375rem;
   font-weight: 700;
-  font-family: 'Space Grotesk', sans-serif;
-  border-radius: var(--radius-md);
+  font-family: 'Fredoka', sans-serif;
+  border-radius: 9999px;
   border: none;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 15px rgba(255, 117, 151, 0.2);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--anime-pink) 0%, #c026d3 100%);
+  background: linear-gradient(135deg, #ff7597 0%, #ff4d6d 100%);
   color: white;
-  box-shadow: 0 4px 20px var(--anime-pink-glow);
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 25px rgba(255, 42, 133, 0.6);
-  filter: brightness(1.1);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 25px rgba(255, 77, 109, 0.4);
 }
 
 .btn-secondary {
-  background: rgba(30, 35, 62, 0.8);
-  border: 1px solid rgba(0, 240, 255, 0.4);
-  color: var(--anime-cyan);
-  box-shadow: 0 4px 15px rgba(0, 240, 255, 0.1);
+  background: #ffffff;
+  border: 2px solid #ffccd5;
+  color: #ff4d6d;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: rgba(0, 240, 255, 0.15);
-  border-color: var(--anime-cyan);
-  color: #ffffff;
-  box-shadow: 0 0 20px var(--anime-cyan-glow);
+  background: #fff0f5;
+  transform: translateY(-2px);
+  border-color: var(--cat-pink);
 }
 
 .btn-danger {
-  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  background: #ff4d6d;
   color: white;
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
 }
 
 .btn-danger:hover:not(:disabled) {
-  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
   transform: translateY(-2px);
+  background: #c9184a;
 }
 
 .btn-sm {
-  padding: 0.45rem 0.875rem;
-  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
 }
 
 .btn:disabled {
@@ -290,77 +264,41 @@ tr:hover {
   cursor: not-allowed;
 }
 
-/* Anime Badges */
+/* Cute Badges */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.3rem 0.75rem;
+  padding: 0.35rem 0.875rem;
   border-radius: 9999px;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
-  font-family: 'Space Grotesk', sans-serif;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-family: 'Fredoka', sans-serif;
 }
 
-.badge-primary {
-  background: rgba(255, 42, 133, 0.15);
-  color: #ff65a3;
-  border: 1px solid rgba(255, 42, 133, 0.4);
-}
-
-.badge-success {
-  background: rgba(0, 255, 170, 0.15);
-  color: var(--anime-success);
-  border: 1px solid rgba(0, 255, 170, 0.4);
-}
-
-.badge-danger {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.4);
-}
-
-.badge-warning {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fde047;
-  border: 1px solid rgba(245, 158, 11, 0.4);
-}
+.badge-primary { background: #fff0f5; color: #ff4d6d; border: 1.5px solid #ffb3c1; }
+.badge-success { background: #e8fccf; color: #2b9348; border: 1.5px solid #b7efc5; }
+.badge-danger { background: #ffe5ec; color: #c9184a; border: 1.5px solid #ffb3c1; }
+.badge-warning { background: #fff3b0; color: #d97706; border: 1.5px solid #ffe3a8; }
 
 /* Alerts */
 .alert {
-  padding: 1rem 1.25rem;
-  border-radius: var(--radius-md);
-  margin-bottom: 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  backdrop-filter: blur(8px);
+  padding: 1.125rem 1.5rem;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
 }
 
-.alert-danger {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.4);
-}
-
-.alert-success {
-  background: rgba(0, 255, 170, 0.15);
-  color: var(--anime-success);
-  border: 1px solid rgba(0, 255, 170, 0.4);
-}
-
-.alert-warning {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fde047;
-  border: 1px solid rgba(245, 158, 11, 0.4);
-}
+.alert-danger { background: #ffe5ec; color: #c9184a; border: 2px solid #ffb3c1; }
+.alert-success { background: #e8fccf; color: #2b9348; border: 2px solid #b7efc5; }
+.alert-warning { background: #fff3b0; color: #b45309; border: 2px solid #ffe3a8; }
 
 /* Modals */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(4, 5, 12, 0.85);
-  backdrop-filter: blur(12px);
+  background: rgba(34, 34, 59, 0.6);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -369,11 +307,11 @@ tr:hover {
 }
 
 .modal-card {
-  background: #0f1222;
-  border: 1px solid var(--anime-pink);
-  box-shadow: 0 0 50px var(--anime-pink-glow);
+  background: #ffffff;
+  border: 3px solid #ffccd5;
+  box-shadow: 0 20px 50px rgba(255, 117, 151, 0.3);
   width: 100%;
   max-width: 520px;
-  border-radius: var(--radius-lg);
-  padding: 2rem;
+  border-radius: var(--radius-cat);
+  padding: 2.25rem;
 }
