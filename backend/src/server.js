@@ -7,11 +7,13 @@ const PORT = process.env.PORT || 5000;
 // Connect to MongoDB
 connectDB();
 
-const server = app.listen(PORT, () => {
+const HOST = '0.0.0.0';
+
+const server = app.listen(PORT, HOST, () => {
   console.log(`
 ================================================================
   🚀 SECURE BLOCKCHAIN CLOUD FILE SHARING BACKEND SERVER RUNNING
-  📡 URL: http://localhost:${PORT}
+  📡 HOST: ${HOST}:${PORT}
   🌍 ENVIRONMENT: ${process.env.NODE_ENV || 'development'}
   🔐 MFA OTP DEV LOG: ${process.env.DEV_LOG_OTP || 'true'}
 ================================================================
