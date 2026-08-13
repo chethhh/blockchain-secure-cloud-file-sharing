@@ -17,29 +17,41 @@ const Sidebar = () => {
   const linkStyle = ({ isActive }) => ({
     display: 'flex',
     alignItems: 'center',
-    gap: '0.75rem',
-    padding: '0.75rem 1rem',
-    borderRadius: '0.5rem',
+    gap: '0.875rem',
+    padding: '0.875rem 1.125rem',
+    borderRadius: '0.75rem',
     fontSize: '0.875rem',
-    fontWeight: 500,
-    color: isActive ? '#2563eb' : '#64748b',
-    backgroundColor: isActive ? '#eff6ff' : 'transparent',
+    fontFamily: "'Space Grotesk', sans-serif",
+    fontWeight: 700,
+    color: isActive ? '#ffffff' : '#94a3b8',
+    background: isActive ? 'linear-gradient(135deg, rgba(255, 42, 133, 0.25) 0%, rgba(0, 240, 255, 0.15) 100%)' : 'transparent',
+    border: isActive ? '1px solid rgba(255, 42, 133, 0.4)' : '1px solid transparent',
+    boxShadow: isActive ? '0 0 15px rgba(255, 42, 133, 0.25)' : 'none',
     textDecoration: 'none',
-    marginBottom: '0.25rem'
+    marginBottom: '0.375rem',
+    transition: 'all 0.25s ease'
   });
 
   return (
     <aside style={{
-      width: '240px',
-      backgroundColor: '#ffffff',
-      borderRight: '1px solid #e2e8f0',
-      padding: '1.5rem 1rem',
+      width: '250px',
+      backgroundColor: 'rgba(10, 12, 24, 0.95)',
+      borderRight: '1px solid rgba(255, 42, 133, 0.2)',
+      padding: '1.75rem 1rem',
       display: 'flex',
       flexDirection: 'column',
       gap: '0.25rem'
     }}>
-      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', padding: '0 0.5rem 0.5rem', textTransform: 'uppercase' }}>
-        Main Navigation
+      <div style={{
+        fontSize: '0.75rem',
+        fontFamily: "'Space Grotesk', sans-serif",
+        fontWeight: 700,
+        color: '#00f0ff',
+        padding: '0 0.75rem 0.75rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.1em'
+      }}>
+        Cyber Protocol
       </div>
 
       <NavLink to="/dashboard" style={linkStyle}>
@@ -76,7 +88,15 @@ const Sidebar = () => {
 
       {user && user.role === 'Admin' && (
         <>
-          <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', padding: '1rem 0.5rem 0.5rem', textTransform: 'uppercase' }}>
+          <div style={{
+            fontSize: '0.75rem',
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontWeight: 700,
+            color: '#ff2a85',
+            padding: '1.25rem 0.75rem 0.75rem',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em'
+          }}>
             Admin Control
           </div>
           <NavLink to="/admin" style={linkStyle}>

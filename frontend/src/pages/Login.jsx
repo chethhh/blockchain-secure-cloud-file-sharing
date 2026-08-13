@@ -27,35 +27,45 @@ const Login = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#f8fafc',
       padding: '1.5rem'
     }}>
       <div style={{
         width: '100%',
-        maxWidth: '420px',
-        backgroundColor: '#ffffff',
-        borderRadius: '0.75rem',
-        border: '1px solid #e2e8f0',
-        boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
-        padding: '2rem'
+        maxWidth: '440px',
+        backgroundColor: 'rgba(15, 18, 34, 0.85)',
+        backdropFilter: 'blur(20px)',
+        borderRadius: '1.25rem',
+        border: '1px solid rgba(255, 42, 133, 0.3)',
+        boxShadow: '0 0 40px rgba(255, 42, 133, 0.25)',
+        padding: '2.5rem'
       }}>
-        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '12px',
-            backgroundColor: '#eff6ff',
-            color: '#2563eb',
+            width: '56px',
+            height: '56px',
+            borderRadius: '16px',
+            background: 'linear-gradient(135deg, #ff2a85, #00f0ff)',
+            color: '#ffffff',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginBottom: '0.75rem'
+            marginBottom: '1rem',
+            boxShadow: '0 0 20px rgba(0, 240, 255, 0.4)'
           }}>
-            <Shield size={28} />
+            <Shield size={32} />
           </div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0f172a' }}>Sign In</h2>
-          <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.25rem' }}>
-            Blockchain-Based Secure Cloud File Sharing System
+          <h2 style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: '1.75rem',
+            fontWeight: 800,
+            background: 'linear-gradient(135deg, #ffffff 0%, #00f0ff 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            SYSTEM ACCESS
+          </h2>
+          <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginTop: '0.375rem' }}>
+            Aura Protocol • IPFS & Ethereum Security
           </p>
         </div>
 
