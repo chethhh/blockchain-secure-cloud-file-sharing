@@ -1,334 +1,172 @@
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const User = require('../models/User');
-const { generateOTP, hashOTP, verifyOTP, sendOTPEmail } = require('../utils/otp');
-const logActivity = require('../utils/logger');
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
-// In-Memory User Fallback Store for zero-config production reliability
-const inMemoryUsers = new Map();
+const { errorHandler } = require('./middleware/errorMiddleware');
 
-// Generate JWT helper
-const generateToken = (userId, email, role) => {
-  return jwt.sign(
-    { userId, email, role },
-    process.env.JWT_SECRET || 'super_secret_jwt_key',
-    { expiresIn: process.env.JWT_EXPIRES_IN || '1d' }
-  );
-};
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const fileRoutes = require('./routes/fileRoutes');
+const walletRoutes = require('./routes/walletRoutes');
+const activityRoutes = require('./routes/activityRoutes');
 
-/**
- * @route   POST /api/auth/register
- * @desc    Register a new user account
- * @access  Public
- */
-const register = async (req, res, next) => {
-  try {
-    const { name, email, password } = req.body;
+const app = express();
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ success: false, message: 'Please provide name, email and password' });
-    }
+/* =========================================================
+   CORS CONFIGURATION
+   ========================================================= */
 
-    if (password.length < 8) {
-      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
-    }
+const allowedOrigins = [
+  'https://blockchain-secure-cloud-file-sharing.vercel.app'
+];
 
-    const lowerEmail = email.toLowerCase().trim();
-    let isDbConnected = false;
-
-    try {
-      if (mongoose.connection.readyState === 1) {
-        const existingUser = await User.findOne({ email: lowerEmail });
-        if (existingUser) {
-          return res.status(400).json({ success: false, message: 'An account with this email already exists' });
-        }
-
-        const user = new User({
-          name,
-          email: lowerEmail,
-          password,
-          role: 'Viewer'
-        });
-        await user.save();
-        isDbConnected = true;
-
-        try {
-          await logActivity({
-            user: user._id,
-            action: 'REGISTER',
-            metadata: { role: 'Viewer' }
-          });
-        } catch (logErr) {}
-      }
-    } catch (dbErr) {
-      console.warn(`[MongoDB Notice] Database operation failed, falling back to memory store: ${dbErr.message}`);
-      isDbConnected = false;
-    }
-
-    if (!isDbConnected) {
-      // In-Memory Database Fallback Mode
-      if (inMemoryUsers.has(lowerEmail)) {
-        return res.status(400).json({ success: false, message: 'An account with this email already exists' });
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests without an Origin header
+      // (Postman, curl, server-to-server requests, etc.)
+      if (!origin) {
+        return callback(null, true);
       }
 
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-      const mockId = new mongoose.Types.ObjectId().toString();
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
 
-      const memoryUser = {
-        _id: mockId,
-        id: mockId,
-        name,
-        email: lowerEmail,
-        password: hashedPassword,
-        role: 'Viewer',
-        walletAddress: null,
-        isEmailVerified: false,
-        otpHash: null,
-        otpExpiresAt: null,
-        otpAttempts: 0
-      };
+      console.warn(`[CORS] Blocked origin: ${origin}`);
+      return callback(new Error('Not allowed by CORS'));
+    },
 
-      inMemoryUsers.set(lowerEmail, memoryUser);
-      console.log(`[Memory DB Fallback] Registered user: ${lowerEmail}`);
-    }
+    credentials: true,
 
-    res.status(201).json({
-      success: true,
-      message: 'Registration successful! Please log in to complete OTP verification.'
-    });
-  } catch (error) {
-    console.error(`[Register Error]`, error);
-    res.status(400).json({
-      success: false,
-      message: error.message || 'Registration failed'
-    });
+    methods: [
+      'GET',
+      'POST',
+      'PUT',
+      'PATCH',
+      'DELETE',
+      'OPTIONS'
+    ],
+
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization'
+    ]
+  })
+);
+
+/* =========================================================
+   SECURITY HEADERS
+   ========================================================= */
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+    crossOriginOpenerPolicy: false
+  })
+);
+
+/* =========================================================
+   RATE LIMITING
+   ========================================================= */
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+
+  message: {
+    success: false,
+    message: 'Too many requests from this IP. Please try again later.'
   }
-};
+});
 
-/**
- * @route   POST /api/auth/login
- * @desc    Verify credentials and send OTP MFA code
- * @access  Public
- */
-const login = async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
+app.use('/api/', limiter);
 
-    if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'Please provide email and password' });
-    }
+/* =========================================================
+   BODY PARSERS
+   ========================================================= */
 
-    const lowerEmail = email.toLowerCase().trim();
-    let isDbConnected = false;
-    let user = null;
-    let isMatch = false;
+app.use(
+  express.json({
+    limit: '15mb'
+  })
+);
 
-    try {
-      if (mongoose.connection.readyState === 1) {
-        user = await User.findOne({ email: lowerEmail }).select('+password');
-        if (user) {
-          isMatch = await user.matchPassword(password);
-          isDbConnected = true;
-        }
-      }
-    } catch (dbErr) {
-      console.warn(`[MongoDB Notice] Login DB query error, using memory store: ${dbErr.message}`);
-      isDbConnected = false;
-    }
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: '15mb'
+  })
+);
 
-    if (!isDbConnected) {
-      user = inMemoryUsers.get(lowerEmail);
-      if (!user) {
-        return res.status(401).json({ success: false, message: 'Invalid credentials' });
-      }
-      isMatch = await bcrypt.compare(password, user.password);
-    }
+/* =========================================================
+   ROOT ROUTE
+   ========================================================= */
 
-    if (!isMatch || !user) {
-      return res.status(401).json({ success: false, message: 'Invalid credentials' });
-    }
-
-    // Generate 6-digit OTP
-    const otp = generateOTP();
-    const otpHash = hashOTP(otp);
-    const expiresMinutes = parseInt(process.env.OTP_EXPIRES_MINUTES || '5');
-
-    if (isDbConnected) {
-      user.otpHash = otpHash;
-      user.otpExpiresAt = new Date(Date.now() + expiresMinutes * 60 * 1000);
-      user.otpAttempts = 0;
-      await user.save();
-    } else {
-      user.otpHash = otpHash;
-      user.otpExpiresAt = new Date(Date.now() + expiresMinutes * 60 * 1000);
-      user.otpAttempts = 0;
-      inMemoryUsers.set(lowerEmail, user);
-    }
-
-    await sendOTPEmail(user.email, otp);
-
-    res.status(200).json({
-      success: true,
-      message: `OTP sent to your email. Expire in ${expiresMinutes} minutes.`,
-      email: user.email,
-      otp: process.env.DEV_LOG_OTP === 'true' ? otp : undefined
-    });
-  } catch (error) {
-    console.error(`[Login Error]`, error);
-    res.status(400).json({
-      success: false,
-      message: error.message || 'Login failed'
-    });
-  }
-};
-
-/**
- * @route   POST /api/auth/verify-otp
- * @desc    Verify 6-digit OTP and issue JWT Token
- * @access  Public
- */
-const verifyOtp = async (req, res, next) => {
-  try {
-    const { email, otp } = req.body;
-
-    if (!email || !otp) {
-      return res.status(400).json({ success: false, message: 'Email and 6-digit OTP are required' });
-    }
-
-    const lowerEmail = email.toLowerCase().trim();
-    let isDbConnected = false;
-    let user = null;
-
-    try {
-      if (mongoose.connection.readyState === 1) {
-        user = await User.findOne({ email: lowerEmail });
-        if (user) isDbConnected = true;
-      }
-    } catch (dbErr) {
-      isDbConnected = false;
-    }
-
-    if (!isDbConnected) {
-      user = inMemoryUsers.get(lowerEmail);
-    }
-
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
-
-    if (!user.otpHash || !user.otpExpiresAt) {
-      return res.status(400).json({ success: false, message: 'No pending OTP verification request found. Please login again.' });
-    }
-
-    const expiresAt = user.otpExpiresAt instanceof Date ? user.otpExpiresAt.getTime() : new Date(user.otpExpiresAt).getTime();
-    if (Date.now() > expiresAt) {
-      return res.status(400).json({ success: false, message: 'OTP code has expired. Please request a new one.' });
-    }
-
-    const maxAttempts = parseInt(process.env.OTP_MAX_ATTEMPTS || '5');
-    if (user.otpAttempts >= maxAttempts) {
-      return res.status(400).json({ success: false, message: 'Maximum OTP verification attempts exceeded. Please login again.' });
-    }
-
-    const isValid = verifyOTP(otp, user.otpHash);
-    if (!isValid) {
-      user.otpAttempts += 1;
-      if (isDbConnected) await user.save();
-      else inMemoryUsers.set(lowerEmail, user);
-      return res.status(400).json({
-        success: false,
-        message: `Invalid OTP code. ${maxAttempts - user.otpAttempts} attempt(s) remaining.`
-      });
-    }
-
-    // Mark verified & clear OTP fields
-    user.isEmailVerified = true;
-    user.otpHash = null;
-    user.otpExpiresAt = null;
-    user.otpAttempts = 0;
-    if (isDbConnected) await user.save();
-    else inMemoryUsers.set(lowerEmail, user);
-
-    const token = generateToken(user._id || user.id, user.email, user.role);
-
-    res.status(200).json({
-      success: true,
-      message: 'Authentication successful',
-      token,
-      user: {
-        id: user._id || user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        walletAddress: user.walletAddress,
-        isEmailVerified: user.isEmailVerified
-      }
-    });
-  } catch (error) {
-    console.error(`[Verify OTP Error]`, error);
-    res.status(400).json({
-      success: false,
-      message: error.message || 'OTP verification failed'
-    });
-  }
-};
-
-/**
- * @route   POST /api/auth/resend-otp
- * @desc    Resend OTP to user email
- * @access  Public
- */
-const resendOtp = async (req, res, next) => {
-  try {
-    const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ success: false, message: 'Email address is required' });
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
-
-    const otp = generateOTP();
-    const otpHash = hashOTP(otp);
-    const expiresMinutes = parseInt(process.env.OTP_EXPIRES_MINUTES || '5');
-
-    user.otpHash = otpHash;
-    user.otpExpiresAt = new Date(Date.now() + expiresMinutes * 60 * 1000);
-    user.otpAttempts = 0;
-    await user.save();
-
-    await sendOTPEmail(user.email, otp);
-
-    res.status(200).json({
-      success: true,
-      message: `A new OTP has been dispatched to ${user.email}`
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
- * @route   GET /api/auth/me
- * @desc    Get currently logged in user profile
- * @access  Private
- */
-const getMe = async (req, res) => {
+app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
-    user: req.user
+    status: 'online',
+    message: 'Welcome to Blockchain Secure Cloud File Sharing API Server 🚀',
+    healthCheck: '/api/health',
+    timestamp: new Date().toISOString()
   });
-};
+});
 
-module.exports = {
-  register,
-  login,
-  verifyOtp,
-  resendOtp,
-  getMe
-};
+/* =========================================================
+   HEALTH CHECK
+   ========================================================= */
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    status: 'online',
+    service: 'Blockchain Secure Cloud File Sharing API',
+    timestamp: new Date().toISOString()
+  });
+});
+
+/* =========================================================
+   TEMPORARY API TEST ROUTE
+   ========================================================= */
+
+app.get('/api/test', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Backend API is working correctly',
+    authRegisterRoute: '/api/auth/register',
+    timestamp: new Date().toISOString()
+  });
+});
+
+/* =========================================================
+   API ROUTES
+   ========================================================= */
+
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/files', fileRoutes);
+app.use('/api/wallet', walletRoutes);
+app.use('/api/activity', activityRoutes);
+
+/* =========================================================
+   404 HANDLER
+   ========================================================= */
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `API Route Not Found: ${req.method} ${req.originalUrl}`
+  });
+});
+
+/* =========================================================
+   CENTRAL ERROR HANDLER
+   ========================================================= */
+
+app.use(errorHandler);
+
+module.exports = app;

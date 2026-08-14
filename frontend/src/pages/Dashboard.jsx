@@ -6,6 +6,7 @@ import { fileAPI, activityAPI } from '../services/api';
 import FileCard from '../components/FileCard';
 import ShareModal from '../components/ShareModal';
 import LoadingSpinner from '../components/LoadingSpinner';
+import DemoOne from '../components/ui/demo';
 import { Files, HardDrive, Share2, Activity, Wallet, UploadCloud, AlertCircle } from 'lucide-react';
 
 const Dashboard = () => {
@@ -185,6 +186,17 @@ const Dashboard = () => {
             <div style={{ fontSize: '0.8125rem', color: '#64748b' }}>Audit Log Actions</div>
           </div>
         </div>
+      </div>
+
+      {/* Featured Media Showcase (3D Coverflow Carousel) */}
+      <div className="card" style={{ marginBottom: '2rem' }}>
+        <div className="card-header" style={{ marginBottom: '0.5rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.25rem', fontFamily: "'Fredoka', sans-serif", fontWeight: 700 }}>✨ Featured Cloud Media Showcase 🐾</h3>
+            <p style={{ fontSize: '0.8125rem', color: '#64748b' }}>Drag or use arrow keys to rotate through 3D Coverflow slides</p>
+          </div>
+        </div>
+        <DemoOne />
       </div>
 
       {/* Recent Files Grid */}
